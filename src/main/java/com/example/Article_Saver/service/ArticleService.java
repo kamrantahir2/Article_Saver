@@ -34,4 +34,10 @@ public class ArticleService {
         return articleRepository.findByNameContaining(str);
     }
 
+    public Article createArticle(Article article) {
+        return articleRepository.save(article);
+    }
+
+
+
 }
