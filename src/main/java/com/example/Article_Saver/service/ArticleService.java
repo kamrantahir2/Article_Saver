@@ -53,6 +53,7 @@ public class ArticleService {
             foundArticle = null;
         }
 
+
         foundArticle.setName(article.getName());
         foundArticle.setUrl(article.getUrl());
         foundArticle.setDescription(article.getDescription());

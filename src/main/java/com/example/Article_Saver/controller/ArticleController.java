@@ -71,7 +71,7 @@ public class ArticleController {
 
     @PutMapping("/articles/{id}")
     ResponseEntity<String> updateArticle(@PathVariable long id,
-                                          @PathVariable Article article) throws JsonProcessingException {
+                                          @RequestBody Article article) throws JsonProcessingException {
 
         Optional<Article> opt = articleService.getArticleById(id);
 
