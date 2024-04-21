@@ -30,5 +30,8 @@ public class ArticleService {
         return articleRepository.findByFavouriteTrue();
     }
 
+    public List<Article> getByNameContaining(String str) {
+        return articleRepository.findByNameContaining(str);
+    }
 
 }

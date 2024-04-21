@@ -11,6 +11,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Article findByName(String name);
 
-
+    List<Article> findByNameContaining(String str);
 
 }
