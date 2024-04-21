@@ -38,6 +38,10 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
+    public void deleteArticle(long id) {
+        articleRepository.deleteById(id);
+    }
+
 
 
 }
