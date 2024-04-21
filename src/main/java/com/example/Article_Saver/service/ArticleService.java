@@ -42,6 +42,23 @@ public class ArticleService {
         articleRepository.deleteById(id);
     }
 
+    public Article updateArticle(long id, Article article){
+        Optional<Article> opt = articleRepository.findById(id);
 
+        Article foundArticle;
+
+        if(opt.isPresent()) {
+            foundArticle = opt.get();
+        } else {
+            foundArticle = null;
+        }
+
+        foundArticle.setName(article.getName());
+        foundArticle.setUrl(article.getUrl());
+        foundArticle.setDescription(article.getDescription());
+        foundArticle.setFavourite(article.isFavourite());
+
+        return articleRepository.save(foundArticle);
+    }
 
 }
