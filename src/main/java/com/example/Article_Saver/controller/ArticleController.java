@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +28,30 @@ public class ArticleController {
                 , HttpStatus.OK);
     }
 
+    @GetMapping("/articles/{id}")
+    ResponseEntity<String> getArticleById(@PathVariable long id) throws JsonProcessingException {
+        Optional<Article> opt = articleService.getArticleById(id);
+        if(opt.isPresent()) {
+            Article presentArticle = opt.get();
+            String jsonArticle =
+                    objectMapper.writeValueAsString(presentArticle);
+            return new ResponseEntity<>(jsonArticle, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity<>("Article not found",
+                    HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/articles/favourites")
+    ResponseEntity<String> getFavouriteArticles() throws JsonProcessingException {
+        List<Article> favouriteArticles = articleService.getByFavourite();
+
+        String jsonArticles =
+                objectMapper.writeValueAsString(favouriteArticles);
+
+        return new ResponseEntity<>(jsonArticles, HttpStatus.OK);
+    }
 
     @PostMapping("/articles")
     ResponseEntity<String> addArticle(@RequestBody Article article) throws JsonProcessingException {
@@ -39,11 +60,48 @@ public class ArticleController {
 
         if (opt.isPresent()) {
             Article presentArticle = opt.get();
-            String jsonArticle = objectMapper.writeValueAsString(presentArticle)
+            String jsonArticle =
+                    objectMapper.writeValueAsString(presentArticle);
             return new ResponseEntity<>(jsonArticle, HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>("Error creating Article", HttpStatus.INTERNAL_SERVER_ERROR)
+            return new ResponseEntity<>("Error creating Article",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/articles/{id}")
+    ResponseEntity<String> updateArticle(@PathVariable long id,
+                                          @PathVariable Article article) throws JsonProcessingException {
+
+        Optional<Article> opt = articleService.getArticleById(id);
+
+        if (opt.isPresent()) {
+            Article updatedArticle = articleService.updateArticle(id, article);
+
+            String jsonUpdatedArticle = objectMapper.writeValueAsString(updatedArticle);
+
+            return new ResponseEntity<>(jsonUpdatedArticle, HttpStatus.OK);
+
+        } else {
+           return new ResponseEntity<>("Article not found",
+                   HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @DeleteMapping("/articles/{id}")
+    ResponseEntity<String> deleteArticle(@PathVariable long id) {
+        Optional<Article> opt = articleService.getArticleById(id);
+
+        if(opt.isPresent()) {
+            Article foundArticle = opt.get();
+            articleService.deleteArticle(id);
+            return new ResponseEntity<>("Article '" + foundArticle.getName() + "' has been deleted", HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>("Article not found",
+                    HttpStatus.NOT_FOUND);
+        }
+
     }
 
 }
